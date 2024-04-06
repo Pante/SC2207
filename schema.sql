@@ -1,5 +1,6 @@
 CREATE TABLE user_account (
   id INT IDENTITY(1, 1) PRIMARY KEY,
+  phone_number VARCHAR(MAX),
   name VARCHAR(MAX),
   gender VARCHAR(MAX) CHECK (gender IN ('male', 'female', 'others')),
   date_of_birth DATE
@@ -7,11 +8,13 @@ CREATE TABLE user_account (
 
 CREATE TABLE related (
   user_1_id INT REFERENCES user_account(id) ON DELETE CASCADE,
-  user_2_id INT REFERENCES user_account(id) ON DELETE CASCADE CHECK (user_1_id != related.user_2_id),
+  user_2_id INT REFERENCES user_account(id) ON DELETE NO ACTION,
 
   type VARCHAR(MAX) NOT NULL, -- TODO: add type constraints
 
-  PRIMARY KEY (user_1_id, user_2_id)
+  PRIMARY KEY (user_1_id, user_2_id),
+
+  CHECK (user_1_id != user_2_id)
 );
 
 
@@ -41,9 +44,10 @@ CREATE TABLE shop_transaction (
 
   amount_spent DECIMAL(19, 4) NOT NULL,
   started_at DATETIME2 NOT NULL,
-  ended_at DATETIME2 NOT NULL CHECK (started_at < ended_at),
+  ended_at DATETIME2 NOT NULL,
 
-  PRIMARY KEY (shop_id, user_id, started_at)
+  PRIMARY KEY (shop_id, user_id, started_at),
+  CHECK (started_at < ended_at)
 );
 
 
@@ -65,9 +69,10 @@ CREATE TABLE restaurant_transaction (
 
   amount_spent DECIMAL(19, 4) NOT NULL,
   started_at DATETIME2 NOT NULL,
-  ended_at DATETIME2 NOT NULL CHECK (started_at < ended_at),
+  ended_at DATETIME2 NOT NULL,
 
-  PRIMARY KEY (restaurant_outlet_id, user_id, started_at)
+  PRIMARY KEY (restaurant_outlet_id, user_id, started_at),
+  CHECK (started_at < ended_at)
 );
 
 
@@ -95,7 +100,8 @@ CREATE TABLE complaint_on_restaurant_outlet (
 
 CREATE TABLE voucher_validity_period (
   issued_at DATETIME2 PRIMARY KEY,
-  expire_at DATETIME2 NOT NULL CHECK (issued_at < expire_at),
+  expire_at DATETIME2 NOT NULL,
+  CHECK (issued_at < expire_at)
 );
 
 CREATE TABLE voucher (
@@ -161,7 +167,7 @@ CREATE TABLE day_package_restaurant_outlet (
 
 CREATE TABLE day_package_voucher (
   id INT PRIMARY KEY REFERENCES voucher(id) ON DELETE CASCADE,
-  day_package_id INT REFERENCES day_package(id) ON DELETE CASCADE,
+  day_package_id INT REFERENCES day_package(id) ON DELETE NO ACTION,
 
   -- Assumption: Day package voucher's discount is a fixed cash amount.
   cash_discount DECIMAL(5, 2) NOT NULL CHECK (0.0 < cash_discount),
@@ -171,8 +177,8 @@ CREATE TABLE day_package_voucher (
 CREATE TABLE recommendation (
   id INT IDENTITY(1, 1) PRIMARY KEY,
   day_package_id INT REFERENCES day_package(id) ON DELETE CASCADE,
-  mall_id INT REFERENCES mall(id) ON DELETE CASCADE,
-  outlet_id INT REFERENCES restaurant_outlet(id) ON DELETE CASCADE,
+  mall_id INT REFERENCES mall(id) ON DELETE NO ACTION,
+  outlet_id INT REFERENCES restaurant_outlet(id) ON DELETE NO ACTION,
 
   issued_at DATETIME2 NOT NULL,
   expired_at DATETIME2 NOT NULL,
@@ -180,7 +186,7 @@ CREATE TABLE recommendation (
 
 CREATE TABLE recommendation_user_account (
   recommendation_id INT REFERENCES recommendation(id) ON DELETE CASCADE,
-  user_id INT REFERENCES user_account(id) ON DELETE CASCADE,
+  user_id INT REFERENCES user_account(id) ON DELETE NO ACTION,
 
   PRIMARY KEY (recommendation_id, user_id)
 );

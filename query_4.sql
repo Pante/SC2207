@@ -12,6 +12,6 @@ WITH total_spent AS (
   GROUP BY user_id
   HAVING 5 <= COUNT(*)
 )
-SELECT TOP 1 total_spent.user_id, total_spent.total_spent, user_account.date_of_birth FROM total_spent
+SELECT TOP 1 total_spent.user_id, total_spent.total_spent, user_account.id, user_account.date_of_birth FROM total_spent
   INNER JOIN user_account ON total_spent.user_id = user_account.id
   ORDER BY user_account.date_of_birth DESC;

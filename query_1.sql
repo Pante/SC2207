@@ -25,7 +25,7 @@ FilteredPackages AS (
     SELECT pc.description, 
            pc.participant_count AS popularity,
            pc.family_count,
-           pc.club_count,
+           pc.club_count
     FROM PackageCounts pc
     WHERE (pc.family_count = pc.participant_count OR pc.club_count = pc.participant_count)
 )

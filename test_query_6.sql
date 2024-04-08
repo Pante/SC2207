@@ -14,8 +14,7 @@ FROM
 GROUP BY
   m.address
 ORDER BY
-  total_mall_earnings DESC
-LIMIT 3;
+  total_mall_earnings DESC;
 
 -- Second result set: Top 3 Restaurants
 SELECT TOP 3 

@@ -40,6 +40,6 @@ WITH restaurant_earnings AS (
     LEFT JOIN mall m ON ro.mall_id = m.id
     GROUP BY ro.restaurant_id, rc.address, m.address, ro.mall_id
 )
-SELECT DISTINCT restaurant_id, restaurant_address, mall_address, outlet_type, total_earnings
+SELECT TOP 3 restaurant_id, restaurant_address, mall_address, outlet_type, total_earnings
 FROM restaurant_earnings
 ORDER BY total_earnings DESC;

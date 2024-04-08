@@ -32,4 +32,5 @@ FilteredPackages AS (
     
 SELECT description, popularity
 FROM FilteredPackages
+WHERE popularity>1    
 ORDER BY popularity desc;

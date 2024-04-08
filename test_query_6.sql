@@ -10,7 +10,7 @@ WITH shop_earnings AS (
 restaurant_earnings AS (
   SELECT
     m.address AS mall_address,
-    SUM(COALESCE(rt.amount_spent, 0)) AS total_mall_restaurant_earnings
+    SUM(rt.amount_spent) AS total_mall_restaurant_earnings
   FROM mall m
   LEFT JOIN restaurant_outlet ro ON m.id = ro.mall_id
   LEFT JOIN restaurant_transaction rt ON ro.id = rt.restaurant_outlet_id
@@ -20,7 +20,7 @@ SELECT TOP 3
   se.mall_address,
   se.total_mall_shop_earnings,
   re.total_mall_restaurant_earnings,
-  se.total_mall_shop_earnings + COALESCE(re.total_mall_restaurant_earnings, 0) AS total_mall_earnings,
+  se.total_mall_shop_earnings + re.total_mall_restaurant_earnings AS total_mall_earnings,
   'Mall' AS entity_type
 FROM shop_earnings se
 LEFT JOIN restaurant_earnings re ON se.mall_address = re.mall_address

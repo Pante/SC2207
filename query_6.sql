@@ -2,11 +2,12 @@
 WITH shop_earnings AS (
   SELECT 
     m.address AS mall_address,
+    m.id AS mall_id,
     SUM(st.amount_spent) AS total_mall_shop_earnings
   FROM mall m
   INNER JOIN shop s ON m.id = s.mall_id
   INNER JOIN shop_transaction st ON s.id = st.shop_id
-  GROUP BY m.address
+  GROUP BY m.address,m.id
 ),
 restaurant_earnings AS (
   SELECT
@@ -18,6 +19,7 @@ restaurant_earnings AS (
   GROUP BY m.address
 )
 SELECT TOP 3
+  se.mall_id,
   se.mall_address,
   se.total_mall_shop_earnings,
   re.total_mall_restaurant_earnings,

@@ -28,8 +28,9 @@ LEFT JOIN restaurant_earnings re ON se.mall_address = re.mall_address
 ORDER BY se.total_mall_shop_earnings DESC;
 
 -- TOP 3 RESTAURANTS BY EARNINGS
-WITH restaurant_earnings AS (
-    SELECT ro.restaurant_id,
+WITH RestaurantEarnings AS (
+    SELECT ro.id AS outlet_id,
+           ro.restaurant_id,
            rc.address AS restaurant_address,
            m.address AS mall_address,
            CASE WHEN ro.mall_id IS NULL THEN 'Independent' ELSE 'Mall' END AS outlet_type,
@@ -38,8 +39,8 @@ WITH restaurant_earnings AS (
     INNER JOIN restaurant_outlet ro ON rt.restaurant_outlet_id = ro.id
     INNER JOIN restaurant_chain rc ON ro.restaurant_id = rc.id
     LEFT JOIN mall m ON ro.mall_id = m.id
-    GROUP BY ro.restaurant_id, rc.address, m.address, ro.mall_id
+    GROUP BY ro.id, ro.restaurant_id, rc.address, m.address, ro.mall_id
 )
-SELECT TOP 3 restaurant_id, restaurant_address, mall_address, outlet_type, total_earnings
-FROM restaurant_earnings
+SELECT TOP 3 outlet_id, total_earnings, restaurant_address, mall_address, outlet_type
+FROM RestaurantEarnings
 ORDER BY total_earnings DESC;
